@@ -8,11 +8,12 @@ import (
 )
 
 var (
-	APP_API_VERSION  string
-	APP_NAME         string
-	APP_ENV          string
-	APP_DEBUG_MODE   bool
-	SERVER_HTTP_PORT string
+	TEMPORAL_CLIENT_URL string
+	APP_API_VERSION     string
+	APP_NAME            string
+	APP_ENV             string
+	APP_DEBUG_MODE      bool
+	SERVER_HTTP_PORT    string
 
 	DB_DRY_RUN       bool
 	DB_NAME          string
@@ -40,6 +41,7 @@ func init() {
 
 	APP_API_VERSION = "v2"
 	SERVER_HTTP_PORT = viper.GetString("APP_PORT")
+	TEMPORAL_CLIENT_URL = viper.GetString("TEMPORAL_CLIENT_URL")
 
 	var err error
 	APP_DEBUG_MODE, err = strconv.ParseBool(viper.GetString("APP_DEBUG_MODE"))
@@ -77,5 +79,20 @@ func init() {
 	SMTP_USERNAME = viper.GetString("SMTP_USERNAME")
 	SMTP_PASSWORD = viper.GetString("SMTP_PASSWORD")
 	SMTP_SENDER = viper.GetString("SMTP_SENDER")
+
+	SMTP_START_TLS, err = strconv.ParseBool(viper.GetString("SMTP_START_TLS"))
+	if err != nil {
+		SMTP_START_TLS = false
+	}
+
+	SMTP_IS_AUTH_REQUIRED, err = strconv.ParseBool(viper.GetString("SMTP_IS_AUTH_REQUIRED"))
+	if err != nil {
+		SMTP_IS_AUTH_REQUIRED = false
+	}
+
+	SMTP_INSECURE_SKIP_VERIFY, err = strconv.ParseBool(viper.GetString("SMTP_INSECURE_SKIP_VERIFY"))
+	if err != nil {
+		SMTP_INSECURE_SKIP_VERIFY = false
+	}
 
 }

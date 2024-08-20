@@ -24,6 +24,7 @@ func SendEmailActivity(ctx context.Context, data domain.EmailDto) error {
 	to := data.Receiver
 	subject := data.Subject
 	htmlTemplate := data.HTMLTemplate
+	cc := data.CC
 
 	// emailLog := models.AuditLogEmailJob{
 	// 	Title:   subject,
@@ -39,7 +40,7 @@ func SendEmailActivity(ctx context.Context, data domain.EmailDto) error {
 	// }
 
 	// Send the email
-	err := helpers.SendEmail(from, to, subject, htmlTemplate, make([]string, 0))
+	err := helpers.SendEmail(from, to, subject, htmlTemplate, cc)
 	if err != nil {
 		// emailLog.Success = false
 		errMsg := err.Error()

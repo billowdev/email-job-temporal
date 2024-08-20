@@ -6,6 +6,7 @@ import (
 
 	"github.com/billowdev/email-job-temporal/internal/adapters/temporal/activities"
 	"github.com/billowdev/email-job-temporal/internal/adapters/temporal/workflows"
+	"github.com/billowdev/email-job-temporal/pkg/configs"
 	"go.temporal.io/sdk/client"
 	temporalLog "go.temporal.io/sdk/log"
 	"go.temporal.io/sdk/worker"
@@ -17,11 +18,17 @@ func RegisterWorkflow(w worker.Registry) {
 }
 func WorkflowClient() client.Client {
 	logger := temporalLog.NewStructuredLogger(slog.Default())
+	hostPort := func() string {
+		if configs.TEMPORAL_CLIENT_URL != "" {
+			return configs.TEMPORAL_CLIENT_URL
+		}
+		return client.DefaultHostPort
+	}()
+
 	c, err := client.Dial(client.Options{
 		// HostPort: client.DefaultHostPort,
-		HostPort: "localhost:7233",
+		HostPort: hostPort,
 		Logger:   logger,
-		// HostPort: "172.16.40.38:7233",
 	})
 	if err != nil {
 		log.Fatalln("Unable to create client", err)

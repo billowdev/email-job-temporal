@@ -23,17 +23,6 @@ func NewEmailService(wc client.Client) ports.IEmailService {
 
 // SendEmail implements ports.IEmailService.
 func (e *EmailServiceImpls) SendEmail(data domain.EmailDto) error {
-	from := data.Sender
-	to := data.Receiver
-	subject := data.Subject
-	htmlTemplate := data.HTMLTemplate
-	cc := data.CC
-
-	_ = from
-	_ = to
-	_ = subject
-	_ = htmlTemplate
-	_ = cc
 	workflowID := "email_" + uuid.New().String()
 	wo := client.StartWorkflowOptions{
 		ID:        workflowID,
