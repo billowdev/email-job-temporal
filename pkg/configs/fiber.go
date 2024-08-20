@@ -15,10 +15,8 @@ type FiberHttpServiceParams struct {
 	Address string
 }
 
-func ProvideFiberHttpServiceParams() *FiberHttpServiceParams {
-
-	fmt.Println("Port = ", SERVER_HTTP_PORT)
-
+func NewFiberHttpServiceParams() *FiberHttpServiceParams {
+	fmt.Println("FIBER HTTP PORT = ", SERVER_HTTP_PORT)
 	return &FiberHttpServiceParams{
 		Port:    SERVER_HTTP_PORT,
 		Address: "",
@@ -46,7 +44,7 @@ func NewFiberHTTPService(params *FiberHttpServiceParams) *fiber.App {
 		AllowHeaders: "*",
 	}))
 
-	log.Printf("Starting Fiber HTTP listener at Port [%s]...", params.Port)
+	log.Printf("Launching Fiber HTTP listener on port [%s]...", params.Port)
 
 	return app
 }
