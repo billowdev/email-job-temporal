@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"sync"
 
 	"github.com/billowdev/email-job-temporal/cmd/application"
 	"github.com/billowdev/email-job-temporal/internal/adapters/temporal/worker"
@@ -13,6 +14,7 @@ import (
 )
 
 func main() {
+	var wg sync.WaitGroup
 	logger := temporalLog.NewStructuredLogger(slog.Default())
 	hostPort := func() string {
 		if configs.TEMPORAL_CLIENT_URL != "" {
@@ -24,12 +26,23 @@ func main() {
 		HostPort: hostPort,
 		Logger:   logger,
 	})
-	if err != nil {
-		log.Fatalln("Unable to create temporal workflow client", err)
-	}
-	defer temporalClient.Close()
 
-	worker.RegisterTemporalWorkflow(temporalClient)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+
+		if err != nil {
+			log.Fatalln("Unable to create temporal workflow client", err)
+		}
+
+		worker.RegisterTemporalWorkflow(temporalClient)
+		if err != nil {
+			log.Fatal("Failed to start Temporal worker:", err)
+		}
+
+		defer temporalClient.Close()
+	}()
+
 	params := configs.NewFiberHttpServiceParams()
 	fiberConfig := configs.NewFiberHTTPService(params)
 	httpFiber := application.AppContainer(fiberConfig, temporalClient)
@@ -38,5 +51,5 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to start golang Fiber server:", err)
 	}
-
+	wg.Wait()
 }
