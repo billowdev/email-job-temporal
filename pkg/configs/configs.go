@@ -40,7 +40,7 @@ func init() {
 	NewViperConfig()
 
 	APP_API_VERSION = "v2"
-	SERVER_HTTP_PORT = viper.GetString("APP_PORT")
+	SERVER_HTTP_PORT = viper.GetString("SERVER_HTTP_PORT")
 	TEMPORAL_CLIENT_URL = viper.GetString("TEMPORAL_CLIENT_URL")
 
 	var err error
